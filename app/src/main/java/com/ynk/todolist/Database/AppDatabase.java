@@ -6,12 +6,11 @@ import android.arch.persistence.room.RoomDatabase;
 import android.arch.persistence.room.TypeConverters;
 import android.content.Context;
 
-//import com.ynk.todolist.Model.TodoList;
-//import com.ynk.todolist.Model.TodoListItem;
+import com.ynk.todolist.Model.TodoList;
+import com.ynk.todolist.Model.TodoListItem;
 import com.ynk.todolist.Model.User;
 
-//@Database(entities = {User.class, TodoList.class, TodoListItem.class}, version = 2, exportSchema = false)
-@Database(entities = {User.class}, version = 2, exportSchema = false)
+@Database(entities = {User.class, TodoList.class, TodoListItem.class}, version = 2, exportSchema = false)
 @TypeConverters({com.ynk.todolist.Database.TypeConverters.class})
 public abstract class AppDatabase extends RoomDatabase {
 
