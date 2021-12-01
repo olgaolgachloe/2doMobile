@@ -1,5 +1,5 @@
-build
-.idea
+build/
+.idea/
 .DS_Store
-.gradle
+.gradle/
 local.properties
