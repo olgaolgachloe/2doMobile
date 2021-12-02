@@ -5,6 +5,7 @@ import android.arch.persistence.room.Insert;
 import android.arch.persistence.room.OnConflictStrategy;
 import android.arch.persistence.room.Query;
 
+import com.ynk.todolist.Model.TodoList;
 import com.ynk.todolist.Model.User;
 
 import java.util.List;
@@ -17,7 +18,6 @@ public interface DAO {
     //Insert Querys
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     void insertUser(User user);
-
 
     //Select Querys
     @Query("SELECT * FROM user WHERE userName = :userName AND userPassword = :password")
