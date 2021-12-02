@@ -54,14 +54,14 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         mDrawerLayout.addDrawerListener(mDrawerToggle);
 
         //toggle.syncState();
-        navigationView.setNavigationItemSelectedListener(this);
+        // navigationView.setNavigationItemSelectedListener(this);
 
-        navigationView.setItemIconTintList(null);
-        navigationView.getMenu().findItem(R.id.nav_todolists).getIcon().setColorFilter(getResources().getColor(R.color.blue_500), PorterDuff.Mode.SRC_ATOP);
-        navigationView.getMenu().findItem(R.id.nav_exit).getIcon().setColorFilter(getResources().getColor(R.color.red_500), PorterDuff.Mode.SRC_ATOP);
+        // navigationView.setItemIconTintList(null);
+        // navigationView.getMenu().findItem(R.id.nav_todolists).getIcon().setColorFilter(getResources().getColor(R.color.blue_500), PorterDuff.Mode.SRC_ATOP);
+        // navigationView.getMenu().findItem(R.id.nav_exit).getIcon().setColorFilter(getResources().getColor(R.color.red_500), PorterDuff.Mode.SRC_ATOP);
 
-        TextView tvHeader = navigationView.getHeaderView(0).findViewById(R.id.tvHeader);
-        tvHeader.setText(user.getUserNameSurname());
+        // TextView tvHeader = navigationView.getHeaderView(0).findViewById(R.id.tvHeader);
+        // tvHeader.setText(user.getUserNameSurname());
 
         openPage("TL");
 
@@ -138,7 +138,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     }
 
     private void signOut() {
-        //Clear Authentication
+        // Authentication cleared
         SharedPreferences preferences = getSharedPreferences(Utils.APP_NAME, MODE_PRIVATE);
         SharedPreferences.Editor editor = preferences.edit();
         editor.remove(Utils.loginControlKey);
