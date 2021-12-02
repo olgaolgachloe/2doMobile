@@ -1,7 +1,8 @@
 package com.ynk.todolist.Activitys;
 
-
 import android.Manifest;
+import android.content.Intent;
+import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.content.res.Configuration;
 import android.graphics.PorterDuff;
@@ -22,10 +23,12 @@ import android.widget.TextView;
 
 import com.google.gson.Gson;
 import com.ynk.todolist.Fragments.FragmentTodoList;
+import com.ynk.todolist.Listeners.MainListener;
 import com.ynk.todolist.Model.User;
 import com.ynk.todolist.R;
+import com.ynk.todolist.Tools.Utils;
 
-public class MainActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener {
+public class MainActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener, MainListener {
 
     private User user;
     private Gson gson;
@@ -113,6 +116,41 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         DrawerLayout drawer = findViewById(R.id.drawer_layout);
         drawer.closeDrawer(GravityCompat.START);
         return true;
+    }
+
+    @Override
+    public void openPage(String pageCode) {
+        FragmentManager fragmentManager = getSupportFragmentManager();
+        FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
+        Fragment fragment = null;
+        Bundle bundle = new Bundle();
+        bundle.putString("user", gson.toJson(user));
+        switch (pageCode) {
+            case "TL"://TodoList
+                fragment = new FragmentTodoList();
+                break;
+        }
+        if (fragment != null) {
+            fragment.setArguments(bundle);
+            fragmentTransaction.replace(R.id.content, fragment);
+            fragmentTransaction.commit();
+        }
+    }
+
+    private void signOut() {
+        //Clear Authentication
+        SharedPreferences preferences = getSharedPreferences(Utils.APP_NAME, MODE_PRIVATE);
+        SharedPreferences.Editor editor = preferences.edit();
+        editor.remove(Utils.loginControlKey);
+        editor.remove(Utils.loginUserNameKey);
+        editor.remove(Utils.loginUserPassword);
+        editor.apply();
+
+        Intent loginSuccessIntent = new Intent(MainActivity.this, LoginActivity.class);
+        loginSuccessIntent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK);
+        loginSuccessIntent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+        startActivity(loginSuccessIntent);
+        finish();
     }
 
 }
