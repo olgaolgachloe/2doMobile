@@ -1,7 +1,9 @@
 package com.ynk.todolist.Fragments;
 
 import android.Manifest;
+import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
@@ -28,8 +30,10 @@ import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.SearchView;
 import android.support.v7.widget.Toolbar;
 import android.text.TextUtils;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
+import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
@@ -393,6 +397,33 @@ public class FragmentTodoList extends Fragment {
         return selectedTodoList;
     }
 
+    @Override
+    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
+        super.onCreateOptionsMenu(menu, inflater);
+        inflater.inflate(R.menu.menu_search, menu);
+
+        MenuItem searchItem = menu.findItem(R.id.searchBar);
+        SearchView searchView = (SearchView) searchItem.getActionView();
+        searchView.setQueryHint(getString(R.string.todoListSearch));
+        searchView.setOnQueryTextListener(searchListener);
+        searchView.setOnCloseListener(new SearchView.OnCloseListener() {
+            @Override
+            public boolean onClose() {
+                searchedLists.clear();
+                searchedLists.addAll(todoLists);
+                adapterTodoList.notifyDataSetChanged();
+                return false;
+            }
+        });
+        EditText searchEditText = searchView.findViewById(android.support.v7.appcompat.R.id.search_src_text);
+        searchEditText.setHintTextColor(getResources().getColor(R.color.white));
+        if (lastSearch != null && !lastSearch.isEmpty()) {
+            searchView.setIconified(false);
+            searchView.setQuery(lastSearch, false);
+        }
+    }
+
     private void showBottomSheetDialog(final List<TodoList> todoLists) {
+        //TODO
     }
 }
