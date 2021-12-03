@@ -371,10 +371,26 @@ public class FragmentTodoList extends Fragment {
     }
 
     private void deleteSelectedListItems() {
+        List<Integer> selectedItemPositions = adapterTodoList.getSelectedItems();
+        for (int i = selectedItemPositions.size() - 1; i >= 0; i--) {
+            TodoList removedList = searchedLists.get(selectedItemPositions.get(i));
+            dao.deleteTodoListItemsByListId(removedList.getListId());
+            dao.deleteTodoList(removedList.getListId());
+            adapterTodoList.removeData(selectedItemPositions.get(i));
+        }
+        adapterTodoList.notifyDataSetChanged();
+        SnackToa.snackBarSuccess(getActivity(), getString(R.string.todoListDeleteMessage));
+        getTodoLists();
     }
 
     private List<TodoList> getSelectedItems() {
-        return null;
+        List<TodoList> selectedTodoList = new ArrayList<>();
+        List<Integer> selectedItemPositions = adapterTodoList.getSelectedItems();
+        for (int i = selectedItemPositions.size() - 1; i >= 0; i--) {
+            TodoList selectedList = searchedLists.get(selectedItemPositions.get(i));
+            selectedTodoList.add(selectedList);
+        }
+        return selectedTodoList;
     }
 
     private void showBottomSheetDialog(final List<TodoList> todoLists) {
