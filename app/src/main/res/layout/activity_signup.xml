@@ -53,7 +53,7 @@
                 app:contentPadding="@dimen/spacing_medium">
 
                 <ImageView
-                    android:id="@+id/imageView_click_to_choose_"
+                    android:id="@+id/imageView_click_to_choose_profile_picture"
                     android:layout_width="@dimen/spacing_xxxxxlarge"
                     android:layout_height="@dimen/spacing_xxxxxlarge"
                     android:background="#F1A86F"
