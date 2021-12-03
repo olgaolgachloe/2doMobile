@@ -64,6 +64,42 @@
                     <LinearLayout
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
+                        android:layout_gravity="bottom"
+                        android:orientation="vertical">
+
+                        <LinearLayout
+                            android:layout_width="wrap_content"
+                            android:layout_height="match_parent"
+                            android:layout_gravity="center"
+                            android:gravity="center"
+                            android:orientation="horizontal">
+
+
+                            <TextView
+                                android:id="@+id/tvContinuesCount"
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:text="0"
+                                android:textAppearance="@style/TextAppearance.AppCompat.Headline"
+                                android:textColor="@color/blue_500"
+                                android:textStyle="bold" />
+
+                        </LinearLayout>
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="match_parent"
+                            android:layout_gravity="center"
+                            android:gravity="center"
+                            android:text="@string/todoListItemStatusContinue"
+                            android:textAppearance="@style/TextAppearance.AppCompat.Caption"
+                            android:textColor="@color/blue_300" />
+
+                    </LinearLayout>
+
+                    <LinearLayout
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
                         android:layout_marginStart="@dimen/spacing_large"
                         android:layout_marginLeft="@dimen/spacing_large"
                         android:orientation="vertical">
@@ -94,6 +130,44 @@
                             android:text="Completed"
                             android:textAppearance="@style/TextAppearance.AppCompat.Caption"
                             android:textColor="@color/green_300" />
+
+                    </LinearLayout>
+
+                    <LinearLayout
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="bottom"
+                        android:layout_marginStart="@dimen/spacing_large"
+                        android:layout_marginLeft="@dimen/spacing_large"
+                        android:orientation="vertical">
+
+                        <LinearLayout
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_gravity="center"
+                            android:gravity="center"
+                            android:orientation="horizontal">
+
+
+                            <TextView
+                                android:id="@+id/tvExpiredCount"
+                                android:layout_width="match_parent"
+                                android:layout_height="match_parent"
+                                android:text="0"
+                                android:textAppearance="@style/TextAppearance.AppCompat.Headline"
+                                android:textColor="@color/red_500"
+                                android:textStyle="bold" />
+
+                        </LinearLayout>
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="match_parent"
+                            android:layout_gravity="center"
+                            android:gravity="center"
+                            android:text="@string/todoListItemStatusExpired"
+                            android:textAppearance="@style/TextAppearance.AppCompat.Caption"
+                            android:textColor="@color/red_300" />
 
                     </LinearLayout>
 

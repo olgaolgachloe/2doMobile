@@ -48,7 +48,6 @@ public class AdapterTodoList extends RecyclerView.Adapter<AdapterTodoList.ViewHo
         ta.recycle();
     }
 
-
     class ViewHolder extends RecyclerView.ViewHolder {
         TextView tvListName;
         TextView tvListAddDate;

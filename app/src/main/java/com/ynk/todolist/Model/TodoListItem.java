@@ -29,4 +29,27 @@ public class TodoListItem {
     @ColumnInfo
     private int listItemStatusCode;
 
+    public String getListId() {
+        return listId;
+    }
+
+    public void setListId(String listId) {
+        this.listId = listId;
+    }
+
+    public Date getListItemDeadline() {
+        return listItemDeadline;
+    }
+
+    public void setListItemDeadline(Date listItemDeadline) {
+        this.listItemDeadline = listItemDeadline;
+    }
+
+    public int getListItemStatusCode() {
+        return listItemStatusCode;
+    }
+
+    public void setListItemStatusCode(int listItemStatusCode) {
+        this.listItemStatusCode = listItemStatusCode;
+    }
 }

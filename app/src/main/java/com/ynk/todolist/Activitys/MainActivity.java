@@ -53,18 +53,17 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                 this, mDrawerLayout, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
         mDrawerLayout.addDrawerListener(mDrawerToggle);
 
-         // toggle.syncState();
-         navigationView.setNavigationItemSelectedListener(this);
+        // toggle.syncState();
+        navigationView.setNavigationItemSelectedListener(this);
 
-         navigationView.setItemIconTintList(null);
-         navigationView.getMenu().findItem(R.id.nav_todolists).getIcon().setColorFilter(getResources().getColor(R.color.blue_500), PorterDuff.Mode.SRC_ATOP);
-         navigationView.getMenu().findItem(R.id.nav_exit).getIcon().setColorFilter(getResources().getColor(R.color.red_500), PorterDuff.Mode.SRC_ATOP);
+        navigationView.setItemIconTintList(null);
+        navigationView.getMenu().findItem(R.id.nav_todolists).getIcon().setColorFilter(getResources().getColor(R.color.blue_500), PorterDuff.Mode.SRC_ATOP);
+        navigationView.getMenu().findItem(R.id.nav_exit).getIcon().setColorFilter(getResources().getColor(R.color.red_500), PorterDuff.Mode.SRC_ATOP);
 
-         TextView tvHeader = navigationView.getHeaderView(0).findViewById(R.id.tvHeader);
-         tvHeader.setText(user.getUserNameSurname());
+        TextView tvHeader = navigationView.getHeaderView(0).findViewById(R.id.tvHeader);
+        tvHeader.setText(user.getUserNameSurname());
 
         openPage("TL");
-
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M)
             if (ActivityCompat.checkSelfPermission(this, Manifest.permission.WRITE_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED || ActivityCompat.checkSelfPermission(this, Manifest.permission.READ_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
                 requestPermissions(new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE, Manifest.permission.READ_EXTERNAL_STORAGE}, 0);
