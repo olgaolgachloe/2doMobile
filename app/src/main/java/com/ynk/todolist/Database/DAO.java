@@ -36,6 +36,9 @@ public interface DAO {
     @Query("DELETE FROM todolist WHERE listId = :listId")
     void deleteTodoList(Long listId);
 
+    @Query("DELETE FROM todolistitem WHERE listId = :listId")
+    void deleteTodoListItemsByListId(Long listId);
+
     @Query("SELECT todolist.* FROM todolist WHERE userId = :userId")
     List<TodoList> getTodolist(String userId);
 }

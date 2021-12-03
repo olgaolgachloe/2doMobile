@@ -1,7 +1,11 @@
 package com.ynk.todolist.Fragments;
 
+import android.Manifest;
+import android.content.pm.PackageManager;
+import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
+import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.Fragment;
 
 import android.app.Dialog;
@@ -13,14 +17,20 @@ import android.support.design.widget.BottomSheetBehavior;
 import android.support.design.widget.BottomSheetDialog;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentManager;
+import android.support.v4.app.FragmentTransaction;
+import android.support.v4.content.FileProvider;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.view.ActionMode;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.support.v7.widget.SearchView;
 import android.support.v7.widget.Toolbar;
 import android.text.TextUtils;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.Window;
@@ -29,15 +39,24 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
 
+import com.google.gson.Gson;
 import com.ynk.todolist.Adapters.AdapterTodoList;
+import com.ynk.todolist.BuildConfig;
+import com.ynk.todolist.Database.AppDatabase;
 import com.ynk.todolist.Database.DAO;
+import com.ynk.todolist.Listeners.RecyclerListClickListener;
 import com.ynk.todolist.Model.TodoList;
 import com.ynk.todolist.Model.User;
 import com.ynk.todolist.R;
+import com.ynk.todolist.Tools.Tools;
+import com.ynk.todolist.Tools.Utils;
 
+import java.io.File;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.Locale;
 
 import muyan.snacktoa.SnackToa;
 
@@ -45,6 +64,10 @@ public class FragmentTodoList extends Fragment {
 
     //Database
     private DAO dao;
+
+    //Multi Selection
+    private ActionModeCallback actionModeCallback;
+    private ActionMode actionMode;
 
     private SimpleDateFormat sdf;
     private String lastSearch = "";
@@ -54,16 +77,98 @@ public class FragmentTodoList extends Fragment {
     private TextView tvCompletedTask;
 
     private View llEmptyBox;
-    private List<TodoList> todoLists;
+    private List<TodoList> todoLists, searchedLists;
     private AdapterTodoList adapterTodoList;
 
     //Bottom Sheet Dialog for Share Module
     private BottomSheetBehavior mBehavior;
     private BottomSheetDialog mBottomSheetDialog;
 
+    private SearchView.OnQueryTextListener searchListener = new SearchView.OnQueryTextListener() {
+        @Override
+        public boolean onQueryTextSubmit(String query) {
+            return false;
+        }
+
+        @Override
+        public boolean onQueryTextChange(String newText) {
+            searchedLists.clear();
+            adapterTodoList.notifyDataSetChanged();
+            for (TodoList pp : todoLists) {
+                if (pp.getListName().toUpperCase().contains(newText.toUpperCase(new Locale("tr")))) {
+                    searchedLists.add(pp);
+                }
+            }
+            adapterTodoList.notifyDataSetChanged();
+            lastSearch = newText;
+            return false;
+        }
+    };
+
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        if (getArguments() != null) {
+            user = new Gson().fromJson(getArguments().getString("user"), User.class);
+        }
+        sdf = new SimpleDateFormat("dd/MM/yyyy", Locale.US);
+        dao = AppDatabase.getDb(getActivity()).getDAO();
+
+        setHasOptionsMenu(true);
+        todoLists = new ArrayList<>();
+        searchedLists = new ArrayList<>();
+        adapterTodoList = new AdapterTodoList(getActivity(), searchedLists, new RecyclerListClickListener() {
+            @Override
+            public void itemClick(View view, Object item, int position) {
+                if (mLastClickTime - System.currentTimeMillis() > 2000) {
+                    return;
+                }
+                mLastClickTime = System.currentTimeMillis();
+                if (adapterTodoList.getSelectedItemCount() > 0) {
+                    enableActionMode(position);
+                } else {
+                    TodoList todoList = (TodoList) item;
+                    FragmentManager fragmentManager = getActivity().getSupportFragmentManager();
+                    FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
+                    Bundle bundle = new Bundle();
+                    bundle.putString("user", new Gson().toJson(user));
+                    bundle.putLong("listId", todoList.getListId());
+                    bundle.putString("listName", todoList.getListName());
+                    FragmentTodoListItem fragment = new FragmentTodoListItem();
+                    fragment.setArguments(bundle);
+                    fragmentTransaction.replace(R.id.content, fragment)
+                            .addToBackStack(Utils.todoListFragmentTag).commit();
+                }
+            }
+
+            @Override
+            public void longItemClick(View view, Object item, int position) {
+                enableActionMode(position);
+            }
+
+            @Override
+            public void moreItemClick(View view, Object item, int position, MenuItem menuItem) {
+                TodoList todoList = (TodoList) item;
+                switch (menuItem.getItemId()) {
+                    case R.id.action_delete:
+                        dao.deleteTodoListItemsByListId(todoList.getListId());
+                        dao.deleteTodoList(todoList.getListId());
+                        SnackToa.snackBarSuccess(getActivity(), getString(R.string.todoListDeleteMessage));
+                        getTodoLists();
+                        break;
+                    case R.id.action_update:
+                        showAddListDialog(todoList);
+                        break;
+                    case R.id.action_share:
+                        List<TodoList> todoLists = new ArrayList<>();
+                        todoLists.add(todoList);
+                        showBottomSheetDialog(todoLists);
+                        break;
+                }
+            }
+
+        });
+        actionModeCallback = new ActionModeCallback();
     }
 
     @Override
@@ -212,4 +317,66 @@ public class FragmentTodoList extends Fragment {
         builder.show();
     }
 
+    private void enableActionMode(int position) {
+        if (actionMode == null) {
+            actionMode = ((AppCompatActivity) getActivity()).startSupportActionMode(actionModeCallback);
+        }
+        toggleSelection(position);
+    }
+
+    private void toggleSelection(int position) {
+        adapterTodoList.toggleSelection(position);
+        int count = adapterTodoList.getSelectedItemCount();
+
+        if (count == 0) {
+            actionMode.finish();
+        } else {
+            actionMode.setTitle(String.valueOf(count));
+            actionMode.invalidate();
+        }
+    }
+
+    private class ActionModeCallback implements ActionMode.Callback {
+        @Override
+        public boolean onCreateActionMode(ActionMode mode, Menu menu) {
+            Tools.setSystemBarColor(getActivity(), R.color.blue_grey_700);
+            mode.getMenuInflater().inflate(R.menu.menu_todolist, menu);
+            return true;
+        }
+
+        @Override
+        public boolean onPrepareActionMode(ActionMode mode, Menu menu) {
+            return false;
+        }
+
+        @Override
+        public boolean onActionItemClicked(ActionMode mode, MenuItem item) {
+            int id = item.getItemId();
+            if (id == R.id.action_delete) {
+                deleteSelectedListItems();
+                mode.finish();
+                return true;
+            } else if (id == R.id.action_share) {
+                showBottomSheetDialog(getSelectedItems());
+            }
+            return false;
+        }
+
+        @Override
+        public void onDestroyActionMode(ActionMode mode) {
+            adapterTodoList.clearSelections();
+            actionMode = null;
+            Tools.setSystemBarColor(getActivity(), R.color.colorAccentLight);
+        }
+    }
+
+    private void deleteSelectedListItems() {
+    }
+
+    private List<TodoList> getSelectedItems() {
+        return null;
+    }
+
+    private void showBottomSheetDialog(final List<TodoList> todoLists) {
+    }
 }
