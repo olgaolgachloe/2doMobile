@@ -4,6 +4,8 @@ import android.arch.persistence.room.ColumnInfo;
 import android.arch.persistence.room.Entity;
 import android.arch.persistence.room.PrimaryKey;
 
+import java.util.Date;
+
 @Entity(tableName = "todolistitem")
 public class TodoListItem {
 
@@ -20,5 +22,11 @@ public class TodoListItem {
     public void setListItemId(Long listItemId) {
         this.listItemId = listItemId;
     }
+
+    @ColumnInfo
+    private Date listItemDeadline;
+
+    @ColumnInfo
+    private int listItemStatusCode;
 
 }

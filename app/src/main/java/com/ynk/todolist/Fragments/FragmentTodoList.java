@@ -216,10 +216,10 @@ public class FragmentTodoList extends Fragment {
         } else {
             llEmptyBox.setVisibility(View.GONE);
             todoLists.addAll(dao.getTodolist(String.valueOf(user.getUserId())));
-            //searchedLists.addAll(todoLists);
+            searchedLists.addAll(todoLists);
             adapterTodoList.notifyDataSetChanged();
-            //int completedCount = dao.getTaskCount(user.getUserId(), "1", sdf.format(new Date()));
-            //tvCompletedTask.setText(String.valueOf(completedCount));
+            int completedCount = dao.getTaskCount(user.getUserId(), "1", sdf.format(new Date()));
+            tvCompletedTask.setText(String.valueOf(completedCount));
         }
     }
 

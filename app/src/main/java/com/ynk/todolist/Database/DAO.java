@@ -39,6 +39,15 @@ public interface DAO {
     @Query("DELETE FROM todolistitem WHERE listId = :listId")
     void deleteTodoListItemsByListId(Long listId);
 
+    @Query("SELECT COUNT(todolistitem.listId) FROM todolist " +
+            " LEFT JOIN todolistitem ON todolistitem.listId = todolist.listId " +
+            " WHERE todolist.userId = :userId AND CASE :countType " +
+            "WHEN '0' THEN todolistitem.listItemStatusCode = 0 " +
+            "WHEN '1' THEN todolistitem.listItemStatusCode = 1 " +
+            "WHEN '-1' THEN todolistitem.listItemDeadline > :expiry " +
+            "END")
+    int getTaskCount(Long userId, String countType, String expiry);
+
     @Query("SELECT todolist.* FROM todolist WHERE userId = :userId")
     List<TodoList> getTodolist(String userId);
 }
