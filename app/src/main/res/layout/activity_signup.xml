@@ -53,11 +53,20 @@
                 app:contentPadding="@dimen/spacing_medium">
 
                 <ImageView
+                    android:id="@+id/imageView_click_to_choose_"
                     android:layout_width="@dimen/spacing_xxxxxlarge"
                     android:layout_height="@dimen/spacing_xxxxxlarge"
-                    android:src="@mipmap/logo" />
+                    android:background="#F1A86F"
+                    app:srcCompat="@drawable/ic_profile_picture" />
 
             </android.support.v7.widget.CardView>
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_horizontal"
+                android:text="Click to upload a profile picture"
+                android:textColor="@color/white"/>
 
 
             <LinearLayout
