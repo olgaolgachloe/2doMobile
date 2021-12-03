@@ -29,5 +29,13 @@ public interface DAO {
     @Query("SELECT COUNT(*) FROM user WHERE userName = :userName OR userMail = :userMail")
     Integer signUpControl(String userName, String userMail);
 
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
+    void insertTodoList(TodoList todoList);
 
+    //Delete Querys
+    @Query("DELETE FROM todolist WHERE listId = :listId")
+    void deleteTodoList(Long listId);
+
+    @Query("SELECT todolist.* FROM todolist WHERE userId = :userId")
+    List<TodoList> getTodolist(String userId);
 }
