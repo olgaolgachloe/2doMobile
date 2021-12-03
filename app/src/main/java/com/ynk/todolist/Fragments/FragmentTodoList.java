@@ -84,9 +84,9 @@ public class FragmentTodoList extends Fragment {
     private List<TodoList> todoLists, searchedLists;
     private AdapterTodoList adapterTodoList;
 
-    //Bottom Sheet Dialog for Share Module
-    private BottomSheetBehavior mBehavior;
-    private BottomSheetDialog mBottomSheetDialog;
+//    Bottom Sheet Dialog for Share Module
+//    private BottomSheetBehavior mBehavior;
+//    private BottomSheetDialog mBottomSheetDialog;
 
     private SearchView.OnQueryTextListener searchListener = new SearchView.OnQueryTextListener() {
         @Override
