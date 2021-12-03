@@ -1,9 +1,12 @@
 package com.ynk.todolist.Activitys;
 
 import android.Manifest;
+import android.app.Activity;
 import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.database.Cursor;
 import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
@@ -11,6 +14,7 @@ import android.provider.MediaStore;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.ActivityCompat;
+import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
@@ -29,9 +33,17 @@ import com.ynk.todolist.Database.DAO;
 import com.ynk.todolist.Model.User;
 import com.ynk.todolist.R;
 
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
+
 import muyan.snacktoa.SnackToa;
 
-
+/**
+ * Reference Link:
+ * https://www.youtube.com/watch?v=foOp5Dq1Ypk&list=PLGaR9_hiykLoIePO_c1PSCxI-q-aHS1t9&index=10
+ * https://medium.com/analytics-vidhya/how-to-take-photos-from-the-camera-and-gallery-on-android-87afe11dfe41
+ */
 public class SignupActivity extends AppCompatActivity implements View.OnClickListener {
 
     private DAO dao;
@@ -39,6 +51,8 @@ public class SignupActivity extends AppCompatActivity implements View.OnClickLis
     private EditText etName, etUserName, etPassword, etMail;
 
     private ImageView imageViewClickToChooseProfilePicture;
+
+    public static final int REQUEST_ID_MULTIPLE_PERMISSIONS = 101;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -51,7 +65,10 @@ public class SignupActivity extends AppCompatActivity implements View.OnClickLis
         imageViewClickToChooseProfilePicture.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                chooseProfilePicture();
+                if(checkAndRequestPermissions(SignupActivity.this)){
+                    chooseProfilePicture();;
+                }
+
             }
         });
 
@@ -145,10 +162,8 @@ public class SignupActivity extends AppCompatActivity implements View.OnClickLis
         imageViewCamera.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if (checkAndRequestPermission()){
                     takePictureFromCamera();
                     alertDialogProfilePicture.cancel();
-                }
             }
         });
 
@@ -164,62 +179,97 @@ public class SignupActivity extends AppCompatActivity implements View.OnClickLis
 
     private void takePictureFromGallery(){
         Intent pickPhoto = new Intent(Intent.ACTION_PICK, MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
-        startActivityForResult(pickPhoto, 1);
+        if (pickPhoto.resolveActivity(getPackageManager()) != null) {
+            startActivityForResult(pickPhoto, 1);
+        }
     }
 
 
     private void takePictureFromCamera(){
         Intent takePicture = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
         if (takePicture.resolveActivity(getPackageManager()) != null){
-            startActivityForResult(takePicture, 2);
+            startActivityForResult(takePicture, 0);
         }
 
     }
 
-    @Override
-    protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
-        super.onActivityResult(requestCode, resultCode, data);
-        switch (requestCode)
-        {
-            case 1:
-                if (resultCode == RESULT_OK){
-                    Uri selectedImageUri = data.getData();
-                    imageViewClickToChooseProfilePicture.setImageURI(selectedImageUri);
-                }
-                break;
-            case 2:
-                if (resultCode == RESULT_OK){
+
+@Override
+protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+    super.onActivityResult(requestCode, resultCode, data);
+    if (resultCode != RESULT_CANCELED) {
+        switch (requestCode) {
+            // camera
+            case 0:
+                if (resultCode == RESULT_OK && data != null) {
                     Bundle bundle = data.getExtras();
                     Bitmap bitmapImage = (Bitmap) bundle.get("data");
                     imageViewClickToChooseProfilePicture.setImageBitmap(bitmapImage);
                 }
                 break;
+            case 1:
+                // gallery
+                if (resultCode == RESULT_OK && data != null) {
+                    Uri selectedImageUri = data.getData();
+                    // imageViewClickToChooseProfilePicture.setImageURI(selectedImageUri);
+                    try {
+                        Bitmap bitmapImage = MediaStore.Images.Media.getBitmap(this.getContentResolver(), selectedImageUri);
+                        imageViewClickToChooseProfilePicture.setImageBitmap(bitmapImage);
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    }
 
+                }
+                break;
         }
     }
+}
 
-    private boolean checkAndRequestPermission(){
-        if (Build.VERSION.SDK_INT >= 23){
-            int cameraPermission = ActivityCompat.checkSelfPermission(SignupActivity.this, Manifest.permission.CAMERA);
-            if (cameraPermission == PackageManager.PERMISSION_DENIED){
-                ActivityCompat.requestPermissions(SignupActivity.this, new String[]{Manifest.permission.CAMERA}, 20);
-                return false;
-            }
+
+    public static boolean checkAndRequestPermissions(final Activity context) {
+        int WExtstorePermission = ContextCompat.checkSelfPermission(context,
+                Manifest.permission.WRITE_EXTERNAL_STORAGE);
+        int cameraPermission = ContextCompat.checkSelfPermission(context,
+                Manifest.permission.CAMERA);
+        List<String> listPermissionsNeeded = new ArrayList<>();
+        if (cameraPermission != PackageManager.PERMISSION_GRANTED) {
+            listPermissionsNeeded.add(Manifest.permission.CAMERA);
+        }
+        if (WExtstorePermission != PackageManager.PERMISSION_GRANTED) {
+            listPermissionsNeeded
+                    .add(Manifest.permission.WRITE_EXTERNAL_STORAGE);
+        }
+        if (!listPermissionsNeeded.isEmpty()) {
+            ActivityCompat.requestPermissions(context, listPermissionsNeeded
+                            .toArray(new String[listPermissionsNeeded.size()]),
+                    REQUEST_ID_MULTIPLE_PERMISSIONS);
+            return false;
         }
         return true;
     }
 
+
     @Override
-    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults){
-        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
-        if (requestCode == 20 && grantResults[0] == PackageManager.PERMISSION_GRANTED){
-            takePictureFromCamera();
+    public void onRequestPermissionsResult(int requestCode,String[] permissions, int[] grantResults) {
+        switch (requestCode) {
+            case REQUEST_ID_MULTIPLE_PERMISSIONS:
+                if (ContextCompat.checkSelfPermission(SignupActivity.this,
+                        Manifest.permission.CAMERA) != PackageManager.PERMISSION_GRANTED) {
+                    Toast.makeText(getApplicationContext(),
+                            "2Do Requires Access to Camera.", Toast.LENGTH_SHORT)
+                            .show();
 
-        }
-        else{
-            Toast.makeText(SignupActivity.this, "Permission not Granted", Toast.LENGTH_SHORT).show();
-        }
+                } else if (ContextCompat.checkSelfPermission(SignupActivity.this,
+                        Manifest.permission.WRITE_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
+                    Toast.makeText(getApplicationContext(),
+                            "2Do Requires Access to Your Gallery.",
+                            Toast.LENGTH_SHORT).show();
 
+                } else {
+                    chooseProfilePicture();
+                }
+                break;
+        }
     }
 
 
