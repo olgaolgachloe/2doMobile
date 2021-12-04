@@ -50,7 +50,7 @@ import java.util.Locale;
 
 import muyan.snacktoa.SnackToa;
 
-public class FragmentTodoListItem extends Fragment {
+public class FragmentTodoListItem extends Fragment implements AAH_FabulousFragment.Callbacks{
     private DAO dao;
 
     private SimpleDateFormat sdf;

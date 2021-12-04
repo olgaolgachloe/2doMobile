@@ -15,6 +15,20 @@ public class TodoListItem {
     @ColumnInfo
     private String listId;
 
+    @ColumnInfo
+    private String listItemName;
+
+    @ColumnInfo
+    private String listItemDesc;
+
+    @ColumnInfo
+    private Date listItemCreateDate;
+
+    @ColumnInfo
+    private String listItemStatusName;
+
+    private boolean isExpanded;//Definition For Expandable RecyclerView
+
     public Long getListItemId() {
         return listItemId;
     }
@@ -51,5 +65,45 @@ public class TodoListItem {
 
     public void setListItemStatusCode(int listItemStatusCode) {
         this.listItemStatusCode = listItemStatusCode;
+    }
+
+    public String getListItemName() {
+        return listItemName;
+    }
+
+    public void setListItemName(String listItemName) {
+        this.listItemName = listItemName;
+    }
+
+    public String getListItemDesc() {
+        return listItemDesc;
+    }
+
+    public void setListItemDesc(String listItemDesc) {
+        this.listItemDesc = listItemDesc;
+    }
+
+    public Date getListItemCreateDate() {
+        return listItemCreateDate;
+    }
+
+    public void setListItemCreateDate(Date listItemCreateDate) {
+        this.listItemCreateDate = listItemCreateDate;
+    }
+
+    public String getListItemStatusName() {
+        return listItemStatusName;
+    }
+
+    public void setListItemStatusName(String listItemStatusName) {
+        this.listItemStatusName = listItemStatusName;
+    }
+
+    public boolean isExpanded() {
+        return isExpanded;
+    }
+
+    public void setExpanded(boolean expanded) {
+        isExpanded = expanded;
     }
 }
