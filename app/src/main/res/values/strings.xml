@@ -6,7 +6,7 @@
 
     <string name="menu_todolist">Todo Lists</string>
     <string name="menu_profile">Profile</string>
-    <string name="menu_exit">Exit</string>
+    <string name="menu_exit">Sign Out</string>
 
 
     <string name="loginErrorMessage">Check the username and password. Please!</string>
@@ -127,6 +127,5 @@
     <string name="search">Search</string>
     <string name="pdfStatusExpired">Expired</string>
     <string name="todoListContinuedCount">%1s Tasks</string>
-
 
 </resources>
