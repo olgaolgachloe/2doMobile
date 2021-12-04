@@ -6,6 +6,7 @@ import android.arch.persistence.room.OnConflictStrategy;
 import android.arch.persistence.room.Query;
 
 import com.ynk.todolist.Model.TodoList;
+import com.ynk.todolist.Model.TodoListItem;
 import com.ynk.todolist.Model.User;
 
 import java.util.List;
@@ -26,6 +27,9 @@ public interface DAO {
     @Query("SELECT * FROM user WHERE userName = :userName")
     User loginControl(String userName);
 
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
+    void insertTodoListItem(TodoListItem todoListItem);
+
     @Query("SELECT COUNT(*) FROM user WHERE userName = :userName OR userMail = :userMail")
     Integer signUpControl(String userName, String userMail);
 
@@ -35,6 +39,9 @@ public interface DAO {
     //Delete Querys
     @Query("DELETE FROM todolist WHERE listId = :listId")
     void deleteTodoList(Long listId);
+
+    @Query("DELETE FROM todolistitem WHERE listItemId = :listId")
+    void deleteTodoListItem(Long listId);
 
     @Query("DELETE FROM todolistitem WHERE listId = :listId")
     void deleteTodoListItemsByListId(Long listId);
@@ -50,4 +57,25 @@ public interface DAO {
 
     @Query("SELECT todolist.* FROM todolist WHERE userId = :userId")
     List<TodoList> getTodolist(String userId);
+
+    @Query("SELECT * FROM todolistitem WHERE listId = :listId")
+    List<TodoListItem> getTodoListItems(String listId);
+
+    //Filters
+    @Query("SELECT * FROM todolistitem WHERE listId = :listId AND listItemStatusCode in(:status) AND listItemDeadline > :expiry")
+    List<TodoListItem> getTodoListItemFilterStExp(String listId, String status, String expiry);
+
+    @Query("SELECT * FROM todolistitem WHERE listId = :listId AND listItemStatusCode in(:status)")
+    List<TodoListItem> getTodoListItemFilterSt(String listId, String status);
+
+    @Query("SELECT * FROM todolistitem WHERE listId = :listId AND listItemDeadline > :expiry")
+    List<TodoListItem> getTodoListItemFilterEx(String listId, String expiry);
+
+    @Query("SELECT * FROM todolistitem WHERE listId = :listId ORDER BY CASE :orderType " +
+            "WHEN 'listItemCreateDate' THEN listItemCreateDate " +
+            "WHEN 'listItemDeadline' THEN listItemDeadline " +
+            "WHEN 'listItemName' THEN listItemName " +
+            "WHEN 'listItemName' THEN listItemStatusCode " +
+            "END ASC")
+    List<TodoListItem> getTodoListItemOrder(String listId, String orderType);
 }
