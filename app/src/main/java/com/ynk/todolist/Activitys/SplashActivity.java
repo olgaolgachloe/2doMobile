@@ -53,8 +53,8 @@ public class SplashActivity extends Activity {
 
 
         findViewById(R.id.ivImageLogo).setAlpha(1.0F);
-//        Animation anim = AnimationUtils.loadAnimation(this, R.anim.fade);
-//        findViewById(R.id.ivImageLogo).startAnimation(anim);
+        Animation anim = AnimationUtils.loadAnimation(this, R.anim.fade);
+        findViewById(R.id.ivImageLogo).startAnimation(anim);
     }
 
 }
