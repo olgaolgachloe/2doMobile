@@ -5,7 +5,10 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.content.res.Configuration;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.graphics.PorterDuff;
+import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.design.widget.NavigationView;
@@ -18,7 +21,9 @@ import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.util.Base64;
 import android.view.MenuItem;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.google.gson.Gson;
@@ -62,6 +67,13 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
         TextView tvHeader = navigationView.getHeaderView(0).findViewById(R.id.tvHeader);
         tvHeader.setText(user.getUserNameSurname());
+
+        // Set profile image (convert image path string to Uri)
+        ImageView imageViewUserImage = navigationView.getHeaderView(0).findViewById(R.id.imageViewUserImage);
+        String stringUserImage = user.getUserImage();
+        Uri uriUserImage = Uri.parse(stringUserImage);
+        imageViewUserImage.setImageURI(uriUserImage);
+
 
         openPage("TL");
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M)

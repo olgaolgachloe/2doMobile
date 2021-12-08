@@ -2,17 +2,15 @@ package com.ynk.todolist.Activitys;
 
 import android.Manifest;
 import android.app.Activity;
+import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
-import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.graphics.drawable.BitmapDrawable;
 import android.net.Uri;
-import android.os.Build;
 import android.os.Bundle;
 import android.provider.MediaStore;
-import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AlertDialog;
@@ -26,6 +24,7 @@ import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.ynk.todolist.Database.AppDatabase;
@@ -33,16 +32,18 @@ import com.ynk.todolist.Database.DAO;
 import com.ynk.todolist.Model.User;
 import com.ynk.todolist.R;
 
-import java.io.IOException;
+import java.io.ByteArrayOutputStream;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.UUID;
 
 import muyan.snacktoa.SnackToa;
 
 /**
- * Reference Link:
+ * Reference Links:
  * https://www.youtube.com/watch?v=foOp5Dq1Ypk&list=PLGaR9_hiykLoIePO_c1PSCxI-q-aHS1t9&index=10
  * https://medium.com/analytics-vidhya/how-to-take-photos-from-the-camera-and-gallery-on-android-87afe11dfe41
+ * https://www.py4u.net/discuss/695800
  */
 public class SignupActivity extends AppCompatActivity implements View.OnClickListener {
 
@@ -110,6 +111,20 @@ public class SignupActivity extends AppCompatActivity implements View.OnClickLis
         switch (v.getId()) {
             case R.id.btnSubmit:
                 boolean isError = false;
+
+                // Profile image: convert bitmap to string
+                Bitmap bitmapUserImage;
+                try {
+                    //  if the user selected a pic
+                    bitmapUserImage = ((BitmapDrawable)imageViewClickToChooseProfilePicture.getDrawable()).getBitmap();
+                }
+                catch(Exception e) {
+                    //  if no pic selected, set it to logo.png
+                    bitmapUserImage = BitmapFactory.decodeResource(getResources(),R.mipmap.logo);
+                }
+                String imagePathString = getImagePathString(getApplicationContext(),bitmapUserImage);
+
+
                 if (TextUtils.isEmpty(etName.getText().toString().trim())) {
                     etName.setError(getString(R.string.signUpNameError));
                     isError = true;
@@ -128,12 +143,14 @@ public class SignupActivity extends AppCompatActivity implements View.OnClickLis
                 }
                 if (isError) return;
 
+
                 if (dao.signUpControl(etUserName.getText().toString(), etMail.getText().toString()) == 0) {
                     User user = new User();
                     user.setUserMail(etMail.getText().toString());
                     user.setUserName(etUserName.getText().toString());
                     user.setUserNameSurname(etName.getText().toString());
                     user.setUserPassword(etPassword.getText().toString());
+                    user.setUserImage(imagePathString);
                     dao.insertUser(user);
                     SnackToa.toastSuccess(this, getString(R.string.signUpSuccessMessage));
                     finish();
@@ -211,14 +228,7 @@ protected void onActivityResult(int requestCode, int resultCode, Intent data) {
                 // gallery
                 if (resultCode == RESULT_OK && data != null) {
                     Uri selectedImageUri = data.getData();
-                    // imageViewClickToChooseProfilePicture.setImageURI(selectedImageUri);
-                    try {
-                        Bitmap bitmapImage = MediaStore.Images.Media.getBitmap(this.getContentResolver(), selectedImageUri);
-                        imageViewClickToChooseProfilePicture.setImageBitmap(bitmapImage);
-                    } catch (IOException e) {
-                        e.printStackTrace();
-                    }
-
+                     imageViewClickToChooseProfilePicture.setImageURI(selectedImageUri);
                 }
                 break;
         }
@@ -270,6 +280,14 @@ protected void onActivityResult(int requestCode, int resultCode, Intent data) {
                 }
                 break;
         }
+    }
+
+
+    public String getImagePathString(Context inContext, Bitmap inImage) {
+        ByteArrayOutputStream bytes = new ByteArrayOutputStream();
+        inImage.compress(Bitmap.CompressFormat.JPEG, 100, bytes);
+        String path = MediaStore.Images.Media.insertImage(SignupActivity.this.getContentResolver(), inImage, UUID.randomUUID().toString() + ".png", "drawing");
+        return path;
     }
 
 
