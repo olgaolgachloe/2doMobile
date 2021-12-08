@@ -8,6 +8,7 @@ import android.content.res.Configuration;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.PorterDuff;
+import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.design.widget.NavigationView;
@@ -67,12 +68,11 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         TextView tvHeader = navigationView.getHeaderView(0).findViewById(R.id.tvHeader);
         tvHeader.setText(user.getUserNameSurname());
 
-        // TODO Set profile image
+        // Set profile image (convert image path string to Uri)
         ImageView imageViewUserImage = navigationView.getHeaderView(0).findViewById(R.id.imageViewUserImage);
         String stringUserImage = user.getUserImage();
-        byte[] decodedStringUserImage = Base64.decode(stringUserImage, Base64.DEFAULT);
-        Bitmap bitmapUserImage = BitmapFactory.decodeByteArray(decodedStringUserImage, 0, decodedStringUserImage.length);
-        imageViewUserImage.setImageBitmap(bitmapUserImage);
+        Uri uriUserImage = Uri.parse(stringUserImage);
+        imageViewUserImage.setImageURI(uriUserImage);
 
 
         openPage("TL");
