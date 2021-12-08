@@ -25,6 +25,9 @@ public class User implements Serializable {
     @ColumnInfo
     private String userPassword;
 
+    @ColumnInfo
+    private String userImage;
+
 
     public Long getUserId() {
         return userId;
@@ -64,5 +67,14 @@ public class User implements Serializable {
 
     public void setUserPassword(String userPassword) {
         this.userPassword = userPassword;
+    }
+
+    // TODO
+    public String getUserImage() {
+        return userImage;
+    }
+
+    public void setUserImage(String userImage) {
+        this.userImage = userImage;
     }
 }

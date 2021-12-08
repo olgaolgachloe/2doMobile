@@ -7,6 +7,7 @@ import android.content.pm.PackageManager;
 import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.graphics.drawable.BitmapDrawable;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
@@ -19,6 +20,7 @@ import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.text.TextUtils;
+import android.util.Base64;
 import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
@@ -26,6 +28,7 @@ import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.ynk.todolist.Database.AppDatabase;
@@ -33,6 +36,7 @@ import com.ynk.todolist.Database.DAO;
 import com.ynk.todolist.Model.User;
 import com.ynk.todolist.R;
 
+import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
@@ -49,6 +53,8 @@ public class SignupActivity extends AppCompatActivity implements View.OnClickLis
     private DAO dao;
 
     private EditText etName, etUserName, etPassword, etMail;
+
+    private TextView tvProfileImage;
 
     private ImageView imageViewClickToChooseProfilePicture;
 
@@ -110,6 +116,23 @@ public class SignupActivity extends AppCompatActivity implements View.OnClickLis
         switch (v.getId()) {
             case R.id.btnSubmit:
                 boolean isError = false;
+
+                // Profile image: convert bitmap to string
+                Bitmap bitmapUserImage;
+                Uri uriUserImage;
+                try {
+                    //  if the user selected a pic
+                    bitmapUserImage = ((BitmapDrawable)imageViewClickToChooseProfilePicture.getDrawable()).getBitmap();
+                }
+                catch(Exception e) {
+                    //  if no pic selected, set it to logo.png
+                    bitmapUserImage = BitmapFactory.decodeResource(getResources(),R.mipmap.logo);
+                }
+                ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
+                bitmapUserImage.compress(Bitmap.CompressFormat.PNG, 100, byteArrayOutputStream);
+                byte[] byteArray = byteArrayOutputStream .toByteArray();
+                String stringUserImage = Base64.encodeToString(byteArray, Base64.DEFAULT);
+
                 if (TextUtils.isEmpty(etName.getText().toString().trim())) {
                     etName.setError(getString(R.string.signUpNameError));
                     isError = true;
@@ -128,12 +151,14 @@ public class SignupActivity extends AppCompatActivity implements View.OnClickLis
                 }
                 if (isError) return;
 
+
                 if (dao.signUpControl(etUserName.getText().toString(), etMail.getText().toString()) == 0) {
                     User user = new User();
                     user.setUserMail(etMail.getText().toString());
                     user.setUserName(etUserName.getText().toString());
                     user.setUserNameSurname(etName.getText().toString());
                     user.setUserPassword(etPassword.getText().toString());
+                    user.setUserImage(stringUserImage);
                     dao.insertUser(user);
                     SnackToa.toastSuccess(this, getString(R.string.signUpSuccessMessage));
                     finish();
@@ -211,14 +236,7 @@ protected void onActivityResult(int requestCode, int resultCode, Intent data) {
                 // gallery
                 if (resultCode == RESULT_OK && data != null) {
                     Uri selectedImageUri = data.getData();
-                    // imageViewClickToChooseProfilePicture.setImageURI(selectedImageUri);
-                    try {
-                        Bitmap bitmapImage = MediaStore.Images.Media.getBitmap(this.getContentResolver(), selectedImageUri);
-                        imageViewClickToChooseProfilePicture.setImageBitmap(bitmapImage);
-                    } catch (IOException e) {
-                        e.printStackTrace();
-                    }
-
+                     imageViewClickToChooseProfilePicture.setImageURI(selectedImageUri);
                 }
                 break;
         }
