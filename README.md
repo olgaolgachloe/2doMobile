@@ -7,8 +7,8 @@ SignUp and SignIn:
 <div align="center">
       <a href="https://www.youtube.com/watch?v=Zij4vE9LExY">
      <img 
-      src="https://img.youtube.com/vi/StTqXEQ2l-Y/0.jpg" 
-      alt="Everything Is AWESOME" 
+      src="https://user-images.githubusercontent.com/77592135/145351597-f9a2e1c6-5bfc-4bf4-b761-1c4156337a54.png" 
+      alt="SignUp and SignIn Demo" 
       style="width:100%;">
       </a>
     </div>
