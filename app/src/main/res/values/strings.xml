@@ -56,7 +56,7 @@
     <string name="todoListItemRemainingDate">%1s days left.</string>
     <string name="todoListItemStatusContinue">Continues</string>
     <string name="todoListItemStatusCompleted">Completed</string>
-    <string name="todoListItemStatusExpired">Expired</string>
+<!--    <string name="todoListItemStatusExpired">Expired</string>-->
     <string name="todolistTitle">2Do</string>
     <string name="todolistItemTitle">%1s Items</string>
 

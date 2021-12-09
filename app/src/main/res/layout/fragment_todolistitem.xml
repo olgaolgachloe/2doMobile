@@ -70,16 +70,5 @@
         app:rippleColor="@android:color/white"
         app:srcCompat="@drawable/ic_add" />
 
-    <android.support.design.widget.FloatingActionButton
-        android:id="@+id/fabFilter"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_gravity="bottom|start"
-        android:layout_margin="@dimen/fab_margin"
-        android:tint="@android:color/white"
-        app:backgroundTint="@color/green_500"
-        app:elevation="5dp"
-        app:fabSize="normal"
-        app:srcCompat="@drawable/ic_filter" />
 
 </android.support.design.widget.CoordinatorLayout>

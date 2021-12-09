@@ -148,9 +148,6 @@ public class AdapterTodoListItem extends RecyclerView.Adapter<AdapterTodoListIte
             if (remainingTime.before(Calendar.getInstance())) {
                 holder.tvItemStatus.setText(context.getString(R.string.todoListItemStatusContinue));
                 holder.tvRemainingDay.setTextColor(context.getResources().getColor(R.color.grey_40));
-            } else {
-                holder.tvItemStatus.setText(context.getString(R.string.todoListItemStatusExpired));
-                holder.tvRemainingDay.setTextColor(context.getResources().getColor(R.color.red_500));
             }
             holder.parentView.setBackgroundColor(context.getResources().getColor(R.color.white));
         }

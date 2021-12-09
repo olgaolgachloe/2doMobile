@@ -192,19 +192,6 @@ public class FragmentTodoListItem extends Fragment implements AAH_FabulousFragme
             }
         });
 
-        FloatingActionButton fabFilter = view.findViewById(R.id.fabFilter);
-        filterDialog = FragmentTodoListItemFilter.newInstance();
-        filterDialog.setParentFab(fabFilter);
-        fabFilter.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                filterDialog.setCallbacks(FragmentTodoListItem.this);
-                Bundle bundle = new Bundle();
-                bundle.putString("filter", new Gson().toJson(filter));
-                filterDialog.setArguments(bundle);
-                filterDialog.show(getActivity().getSupportFragmentManager(), filterDialog.getTag());
-            }
-        });
 
         getTodoListItems();
 

@@ -79,9 +79,9 @@ public class FragmentTodoList extends Fragment {
     private long mLastClickTime = 0;
     private User user;
 
-    private TextView tvContinuesCount;
+
     private TextView tvCompletedTask;
-    private TextView tvExpiredCount;
+
 
     private View llEmptyBox;
     private List<TodoList> todoLists, searchedLists;
@@ -188,9 +188,7 @@ public class FragmentTodoList extends Fragment {
         toolbar.setSubtitle(getString(R.string.todoListPageSubTitle));
         ((AppCompatActivity) getActivity()).setSupportActionBar(toolbar);
 
-        tvContinuesCount = view.findViewById(R.id.tvContinuesCount);
         tvCompletedTask = view.findViewById(R.id.tvCompletedTask);
-        tvExpiredCount = view.findViewById(R.id.tvExpiredCount);
 
         View bottomSheet = view.findViewById(R.id.bottomSheet);
         llEmptyBox = view.findViewById(R.id.llEmptyBox);
@@ -227,12 +225,8 @@ public class FragmentTodoList extends Fragment {
             todoLists.addAll(dao.getTodolist(String.valueOf(user.getUserId())));
             searchedLists.addAll(todoLists);
             adapterTodoList.notifyDataSetChanged();
-            int continuesCount = dao.getTaskCount(user.getUserId(), "0", sdf.format(new Date()));
             int completedCount = dao.getTaskCount(user.getUserId(), "1", sdf.format(new Date()));
-            int expiredCount = dao.getTaskCount(user.getUserId(), "-1", sdf.format(new Date()));
-            tvContinuesCount.setText(String.valueOf(continuesCount));
             tvCompletedTask.setText(String.valueOf(completedCount));
-            tvExpiredCount.setText(String.valueOf(expiredCount));
         }
     }
 
