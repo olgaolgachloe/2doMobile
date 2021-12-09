@@ -2,8 +2,10 @@
 ## Contributor: Lin Cao, Rui Chao, Yanwen Duan and Yixuan Liao
 ## Description: 2Do is an easy and practical application to plan and organize your TO-DO tasks at home, school, or work.
 
+
 ### Demo Video
-SignUp and SignIn: 
+
+##### SignUp and SignIn Page: 
 <div align="center">
       <a href="https://www.youtube.com/watch?v=Zij4vE9LExY">
      <img 
@@ -12,6 +14,17 @@ SignUp and SignIn:
       style="width:100%;">
       </a>
     </div>
+    
+##### List Item Details Page: 
+<div align="center">
+      <a href="https://www.youtube.com/watch?v=qKQm39LEfsg">
+     <img 
+      src="https://user-images.githubusercontent.com/77592135/145351997-c0c94f63-8892-4f90-8ff2-e6b6878ca3cd.png" 
+      alt="List Item Details Page" 
+      style="width:100%;">
+      </a>
+    </div>
+    
 ### Welcome Page
 <p align="center">
 <img src="https://user-images.githubusercontent.com/77592135/145311858-3fcf7a2d-3853-4d2c-ae45-b821125092b7.png" width="300">
