@@ -6,9 +6,9 @@
         android:orderInCategory="100"
         android:title="" />
 
-    <item
-        android:id="@+id/action_share"
-        android:icon="@drawable/ic_share"
-        android:orderInCategory="100"
-        android:title="" />
+<!--    <item-->
+<!--        android:id="@+id/action_share"-->
+<!--        android:icon="@drawable/ic_share"-->
+<!--        android:orderInCategory="100"-->
+<!--        android:title="" />-->
 </menu>

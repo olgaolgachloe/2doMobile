@@ -166,11 +166,11 @@ public class FragmentTodoList extends Fragment {
                     case R.id.action_update:
                         showAddListDialog(todoList);
                         break;
-                    case R.id.action_share:
-                        List<TodoList> todoLists = new ArrayList<>();
-                        todoLists.add(todoList);
-                        showBottomSheetDialog(todoLists);
-                        break;
+//                    case R.id.action_share:
+//                        List<TodoList> todoLists = new ArrayList<>();
+//                        todoLists.add(todoList);
+//                        showBottomSheetDialog(todoLists);
+//                        break;
                 }
             }
 
@@ -369,9 +369,10 @@ public class FragmentTodoList extends Fragment {
                 deleteSelectedListItems();
                 mode.finish();
                 return true;
-            } else if (id == R.id.action_share) {
-                showBottomSheetDialog(getSelectedItems());
             }
+//            } else if (id == R.id.action_share) {
+//                showBottomSheetDialog(getSelectedItems());
+//            }
             return false;
         }
 
@@ -429,98 +430,6 @@ public class FragmentTodoList extends Fragment {
         if (lastSearch != null && !lastSearch.isEmpty()) {
             searchView.setIconified(false);
             searchView.setQuery(lastSearch, false);
-        }
-    }
-
-    private void showBottomSheetDialog(final List<TodoList> todoLists) {
-        if (mBehavior.getState() == BottomSheetBehavior.STATE_EXPANDED) {
-            mBehavior.setState(BottomSheetBehavior.STATE_COLLAPSED);
-        }
-
-        final PdfCreator pdfCreator = new PdfCreator(getActivity());
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M)
-            if (ActivityCompat.checkSelfPermission(getActivity(), Manifest.permission.WRITE_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED || ActivityCompat.checkSelfPermission(getActivity(), Manifest.permission.READ_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
-                requestPermissions(new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE, Manifest.permission.READ_EXTERNAL_STORAGE}, 0);
-            }
-
-        final View view = getLayoutInflater().inflate(R.layout.dialog_bottom_sheet, null);
-
-        view.findViewById(R.id.lyt_preview).setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                pdfCreator.initNewDocument();
-                pdfCreator.prepareBody(todoLists);
-                pdfCreator.closeDocument();
-                mBottomSheetDialog.dismiss();
-                SnackToa.toastSuccess(getActivity(), getString(R.string.todoListShareCreatePdfMessage, pdfCreator.getDocumentPath()));
-                openPDFFile(pdfCreator.getDocumentPath());
-            }
-        });
-
-        view.findViewById(R.id.lyt_share).setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                pdfCreator.initNewDocument();
-                pdfCreator.prepareBody(todoLists);
-                pdfCreator.closeDocument();
-                mBottomSheetDialog.dismiss();
-                SnackToa.toastInfo(getActivity(), getString(R.string.todoListShareSendMailMessage));
-                sendMail(FileProvider.getUriForFile(getActivity(),
-                        BuildConfig.APPLICATION_ID + ".provider",
-                        new File(pdfCreator.getDocumentPath())));
-            }
-        });
-
-
-        mBottomSheetDialog = new BottomSheetDialog(getActivity());
-        mBottomSheetDialog.setContentView(view);
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-            mBottomSheetDialog.getWindow().addFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS);
-        }
-
-        mBottomSheetDialog.show();
-        mBottomSheetDialog.setOnDismissListener(new DialogInterface.OnDismissListener() {
-            @Override
-            public void onDismiss(DialogInterface dialog) {
-                mBottomSheetDialog = null;
-            }
-        });
-    }
-
-    private void sendMail(Uri pdfUri) {
-        try {
-            //String email = user.getUserMail();
-            String subject = getString(R.string.todolistPdfExportMailSubject);
-
-            final Intent emailIntent = new Intent(android.content.Intent.ACTION_SEND);
-            emailIntent.setType("application/pdf");
-            //emailIntent.putExtra(android.content.Intent.EXTRA_EMAIL, new String[]{email});
-            emailIntent.putExtra(android.content.Intent.EXTRA_SUBJECT, subject);
-
-            if (pdfUri != null) {
-                emailIntent.putExtra(Intent.EXTRA_STREAM, pdfUri);
-            }
-            emailIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-            this.startActivity(Intent.createChooser(emailIntent, getString(R.string.todolistPdfExportMailInfo)));
-
-        } catch (Throwable t) {
-            SnackToa.toastError(getActivity(), "Request failed try again: " + t.toString());
-            Log.e("Send Mail", "Request failed try again: " + t.toString());
-        }
-
-    }
-
-    public void openPDFFile(String docPath) {
-        File pdfFile = new File(docPath);//File path
-        if (pdfFile.exists()) //Checking for the file is exist or not
-        {
-            Uri pdfUri = FileProvider.getUriForFile(getActivity(),
-                    BuildConfig.APPLICATION_ID + ".provider",
-                    new File(docPath));
-            Intent objIntent = new Intent(Intent.ACTION_VIEW);
-            objIntent.setDataAndType(pdfUri, "application/pdf");
-            objIntent.setFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
-            this.startActivity(objIntent);//Staring the pdf viewer
         }
     }
 }
