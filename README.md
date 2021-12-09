@@ -1,6 +1,7 @@
 # 2DO App
 ## Contributor: Lin Cao, Rui Chao, Yanwen Duan and Yixuan Liao
 ## Description: 2Do is an easy and practical application to plan and organize your TO-DO tasks at home, school, or work.
+## [Feature and User Engagement Docs](https://docs.google.com/document/d/1iYTNsu-FyxlzvoS4H7rsDEXGQ1n1KrWECEf6KxXqT7s/edit#)
 
 -------------------------------------------------------------------------------------------------------------------------------
 ### Demo Video
